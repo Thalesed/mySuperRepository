@@ -13,9 +13,10 @@ int mmc(int x, int y) {
 		maior = y;
 		menor = x;
 	}
-	for(int i = menor;i>1;i--){
-		if(maior % i == 0 && menor % i == 0){
+	for(int i = maior;1;i++){
+		if(i % maior == 0 && i % menor == 0){
 			res = i;
+			break;
 		}
 	}
 	return res;
