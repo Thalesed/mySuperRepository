@@ -1,0 +1,71 @@
+<HomeScreen>:
+    FloatLayout:
+        Header:
+            size_hint_y: None
+            height: '100dp'
+            pos_hint: {'top': 1}
+        
+        Content:
+            id: content
+            size_hint: (1, None)
+            height: self.minimum_height
+            pos_hint: {'top': 0.85}
+        
+        Footer:
+            size_hint_y: None
+            height: '50dp'
+            pos_hint: {'bottom': 0}
+
+<AgendaScreen>:
+    BoxLayout:
+
+        orientation: 'vertical'
+        
+        Header:
+            size_hint_y: 0.1
+        
+        Label:
+            text: 'Agenda'
+        
+        Footer:
+            size_hint_y: 0.1
+
+<GalleryScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        
+        Header:
+            size_hint_y: 0.1
+        
+        Label:
+            text: 'Galeria'
+        
+        Footer:
+            size_hint_y: 0.1
+
+<ContactScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        
+        Header:
+            size_hint_y: 0.1
+        
+        Label:
+            text: 'Contato'
+        
+        Footer:
+            size_hint_y: 0.1
+
+<OtherScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        
+        Header:
+            size_hint_y: 0.1
+        
+        Label:
+            text: 'Outra'
+        
+        Footer:
+            size_hint_y: 0.1
+
