@@ -115,6 +115,8 @@ void show_mbi();
 
 void die();
 
+uint64 detect_memory();
+
 void init_memory();
 
 void sendCmd();

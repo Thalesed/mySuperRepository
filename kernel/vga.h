@@ -9,8 +9,9 @@
 #define VGA_POINTER 0xB8000
 #define BUFFER_SIZE (VGA_WIDTH * VGA_HEIGHT) +1
 
+#define INDEX_LIMIT 11
 uint16* vga_buffer;
-uint16 vga_index = 0;
+uint16 vga_index = INDEX_LIMIT;
 
 #define MAX_CHAR 0xFFF
 
@@ -99,7 +100,7 @@ uint8 putchar(unsigned char ch){
 	if(ch == '\n'){
 		newLine();
 	}
-	else if( ch =='\b' && vga_index > 0){
+	else if( ch =='\b' && ( (vga_index - ((vga_index /(VGA_WIDTH)) * VGA_WIDTH)) > 10 ) ){
 		if(vga_buffer[vga_index-1] != MAX_CHAR /*&& vga_buffer[vga_index] != MAX_CHAR*/){
 			vga_index--;
 			vga_buffer[vga_index] = vga_add(' ', WHITE, BLACK);
@@ -109,6 +110,7 @@ uint8 putchar(unsigned char ch){
 		}
 	}else if(ch == '\t'){
 		vga_index+=4;
+
 	}else if(vga_index < BUFFER_SIZE){
 		if( (vga_buffer[vga_index - 1] & 0x80) != ch){
 			vga_buffer[vga_index] = vga_add(ch, WHITE, BLACK);

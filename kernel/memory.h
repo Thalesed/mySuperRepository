@@ -14,7 +14,7 @@ struct e820_entry {
 struct e820_entry e820_map[E820_MAX_ENTRIES];
 unsigned int e820_entries_count = 0;
 
-void detect_memory();
+uint64 detect_memory();
 
 void analyze_memory() {
     for (unsigned int i = 0; i < e820_entries_count; ++i) {

@@ -5,6 +5,23 @@
 
 uint8* ram;
 
+#include <stdint.h>
+
+extern void* multiboot_info;
+
+#define MULTIBOOT_INFO_MEM_MAP 0x0000000000000010
+
+typedef struct {
+    uint32_t size;
+    uint32_t base_addr_low;
+    uint32_t base_addr_high;
+    uint32_t length_low;
+    uint32_t length_high;
+    uint32_t type;
+} __attribute__((packed)) multiboot_memory_map_t;
+
+uint64* ram_start = 0;
+
 void kernel_start(uint32 magic, uint32* mbi_ptr){
 	MULTIBOOT_INFO * mboot_info = (MULTIBOOT_INFO *)mbi_ptr;
 	vga_start(WHITE, BLACK);
@@ -13,21 +30,23 @@ void kernel_start(uint32 magic, uint32* mbi_ptr){
 	vga_print(intToStr( (mboot_info->mem_high)));
 	vga_print("\n");
 
-	init_memory();
+	//init_memory();
+	uint64 teste = detect_memory();
+	ram_start = (void*)teste;
 
 	char key = '\n';
-
-	char* cmd_buffer = (char*)(ram + 16); 
+	
+	char* cmd_buffer = (char*)(ram_start);	
 	uint8 cmd_i = 0;
+	//cmd_buffer[cmd_i] = '\0';
 	while(1){
 		if(key == '\n'){
-			vga_print("SWAN-OS >>");
-			unsafe_putchar(MAX_CHAR);
 			cmd_buffer[cmd_i] = '\0';
-			//vga_print(cmd_buffer);
-			sendCmd(cmd_buffer);
-			cmd_buffer[cmd_i] = NULL;
+			vga_print(cmd_buffer);
+			vga_print("\nSWAN-OS >>");
+			//sendCmd(cmd_buffer);
 			cmd_i = 0;
+			cmd_buffer[cmd_i] = '\0';
 		}else if(key == '\0'){
 			//die();
 		}
@@ -50,18 +69,36 @@ void kernel_start(uint32 magic, uint32* mbi_ptr){
 			if(key == '\b'){
 				if(cmd_i > 0){
 					//vga_print("BackSpace");
-					cmd_buffer[cmd_i-1] = NULL;
+					cmd_buffer[cmd_i] = ' ';
 					cmd_i--;
 				}
 			}else{
 				cmd_buffer[cmd_i] = key;
 				cmd_i++;
-				//vga_print("Added");
+				cmd_buffer[cmd_i] = '\0';
+				//vga_print(intToStr(cmd_i));
 			}
-			vga_print(cmd_buffer);
 		}
 	}
 	return;
+}
+
+uint8 test_memory(uint64 * addr) {
+    volatile uint8 * ptr = (volatile uint8*)addr;
+    *ptr = 0x55;
+    return *ptr == 0x55; 
+}
+
+uint64 detect_memory() {
+	uint64 start = 0x00100000;
+	uint64 end = 0x00F00000;
+
+	for(uint64 i = start; i < end; i += 0x1000){
+		if(test_memory((uint64*)i)){
+			return i;
+		}
+	}
+
 }
 
 void init_memory(){
